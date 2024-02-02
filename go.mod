@@ -3,6 +3,7 @@ module mooon-login-example
 go 1.21.5
 
 require (
+	github.com/eyjian/gomooon v0.0.0-20240202115927-e720e3e324e6
 	github.com/zeromicro/go-zero v1.6.1
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0

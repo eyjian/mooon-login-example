@@ -1,15 +1,19 @@
 package logic
 
 import (
-	"context"
+    "context"
     "encoding/json"
     "github.com/zeromicro/go-zero/core/logc"
     "google.golang.org/grpc/status"
 
     "mooon-login-example/internal/svc"
-	"mooon-login-example/pb/mooon_login"
+    "mooon-login-example/pb/mooon_login"
 
-	"github.com/zeromicro/go-zero/core/logx"
+    "github.com/zeromicro/go-zero/core/logx"
+)
+import (
+    moooncrypto "github.com/eyjian/gomooon/crypto"
+    mooonutils "github.com/eyjian/gomooon/utils"
 )
 
 const (
@@ -31,8 +35,8 @@ type LoginReq struct {
 
 // LoginResp 登录响应
 type LoginResp struct {
-    Uid uint32 `json:"uid"`// 用户 ID
-    Avatar string `json:"avatar"`// 头像
+    Uid    uint32 `json:"uid"`    // 用户 ID
+    Avatar string `json:"avatar"` // 头像
 }
 
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
@@ -52,14 +56,14 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     // 判断请求是否为空
     if len(in.Body) == 0 {
         logc.Error(l.ctx, "empty request")
-        return nil, status.Error(EmptyRequest,"empty request")
+        return nil, status.Error(EmptyRequest, "empty request")
     }
 
     // 解密请求
     err := json.Unmarshal(in.Body, &loginReq)
     if err != nil {
         logc.Errorf(l.ctx, "invalid request")
-        return nil, status.Error(InvalidRequest,"empty request")
+        return nil, status.Error(InvalidRequest, "empty request")
     }
     if loginReq.Username == "" || loginReq.Password == "" {
         logc.Errorf(l.ctx, "username and password are required")
@@ -68,13 +72,13 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
 
     // 写 cookies
     sessionCookie := mooon_login.Cookie{
-        Name:  "sid",
-        Value: "sid example",
+        Name:   "sid",
+        Value:  getSessionId(),
         MaxAge: 3600,
     }
     tokenCookie := mooon_login.Cookie{
-        Name:  "token",
-        Value: "token example",
+        Name:     "token",
+        Value:    "token example",
         HttpOnly: true,
     }
     out.HttpCookies = append(out.HttpCookies, &sessionCookie)
@@ -85,9 +89,18 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.HttpHeaders["Mooon-Header"] = "example"
 
     // 写响应体
-    loginResp.Uid = 20240202
+    loginResp.Uid = getUid()
     loginResp.Avatar = "https://github.com/eyjian/mooon-login-example/blob/main/avatar.png"
     out.Body, _ = json.Marshal(&loginResp)
 
     return &out, nil
+}
+
+func getSessionId() string {
+    nonceStr := mooonutils.GetNonceStr(28)
+    return moooncrypto.Md5Sum(nonceStr, false)
+}
+
+func getUid() uint32 {
+    return 20240202
 }
