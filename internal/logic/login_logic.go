@@ -78,7 +78,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.HttpHeaders["Mooon-Header"] = "example"
 
     // 写响应体
-    loginResp.uid = 20240202
+    loginResp.Uid = 20240202
     loginResp.Avatar = "https://github.com/eyjian/mooon-login-example/blob/main/avatar.png"
     out.Body, _ = json.Marshal(&loginResp)
 
