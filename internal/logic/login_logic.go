@@ -132,7 +132,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.HttpHeaders["Mooon-Header"] = "example"
 
     // 写响应体
-    loginResp.Uid = getUid()
+    loginResp.Uid = loginData.uid
     loginResp.Avatar = "https://github.com/eyjian/mooon-login-example/blob/main/avatar.png"
     out.Body, _ = json.Marshal(&loginResp)
 
@@ -142,8 +142,4 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
 func getSessionId() string {
     nonceStr := mooonutils.GetNonceStr(28)
     return moooncrypto.Md5Sum(nonceStr, false)
-}
-
-func getUid() uint32 {
-    return 20240202
 }
