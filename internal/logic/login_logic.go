@@ -67,11 +67,17 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     }
 
     // 写 cookies
-    httpCookie := mooon_login.Cookie{
+    sessionCookie := mooon_login.Cookie{
         Name:  "sid",
-        Value: "example",
+        Value: "sid example",
+        MaxAge: 3600,
     }
-    out.HttpCookies = append(out.HttpCookies, &httpCookie)
+    tokenCookie := mooon_login.Cookie{
+        Name:  "token",
+        Value: "token example",
+        HttpOnly: true,
+    }
+    out.HttpCookies = append(out.HttpCookies, &sessionCookie, &tokenCookie)
 
     // 写 http 头
     out.HttpHeaders = make(map[string]string)
