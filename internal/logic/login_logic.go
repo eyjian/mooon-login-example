@@ -37,7 +37,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
 
     loginResp.HttpHeaders = make(map[string]string)
 	loginResp.HttpHeaders["Mooon-Header"] = "example"
-	loginResp.Body = []byte("{\"\"mooon\":\"example\"}")
+	loginResp.Body = []byte("{\"mooon\":\"example\"}")
 
 	return &loginResp, nil
 }
