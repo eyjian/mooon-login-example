@@ -25,8 +25,8 @@ type LoginLogic struct {
 
 // LoginReq 登录请求
 type LoginReq struct {
-    Username string `json:"username"` // 用户名
-    Password string `json:"password"` // 密码
+    Username string `json:"username,required"` // 用户名
+    Password string `json:"password,required"` // 密码
 }
 
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
