@@ -31,8 +31,8 @@ type LoginReq struct {
 
 // LoginResp 登录响应
 type LoginResp struct {
-    uid uint32 // 用户 ID
-    Avatar string // 头像
+    Uid uint32 `json:"uid"`// 用户 ID
+    Avatar string `json:"avatar"`// 头像
 }
 
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
