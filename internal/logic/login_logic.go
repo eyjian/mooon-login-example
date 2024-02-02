@@ -29,6 +29,12 @@ type LoginReq struct {
     Password string `json:"password,required"` // 密码
 }
 
+// LoginResp 登录响应
+type LoginResp struct {
+    uid uint32 // 用户 ID
+    Avatar string // 头像
+}
+
 func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic {
     return &LoginLogic{
         ctx:    ctx,
@@ -40,6 +46,7 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, error) {
     // todo: add your logic here and delete this line
     var loginReq LoginReq
+    var loginResp LoginResp
     var out mooon_login.LoginResp
 
     // 判断请求是否为空
@@ -71,7 +78,9 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.HttpHeaders["Mooon-Header"] = "example"
 
     // 写响应体
-    out.Body = []byte("{\"mooon\":\"example\"}")
+    loginResp.uid = 20240202
+    loginResp.Avatar = "https://github.com/eyjian/mooon-login-example/blob/main/avatar.png"
+    out.Body, _ = json.Marshal(&loginResp)
 
     return &out, nil
 }
