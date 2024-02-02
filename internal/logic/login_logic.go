@@ -54,6 +54,10 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
         logc.Errorf(l.ctx, "invalid request")
         return nil, status.Error(InvalidRequest,"empty request")
     }
+    if loginReq.Username == "" || loginReq.Password == "" {
+        logc.Errorf(l.ctx, "username and password are required")
+        return nil, status.Error(InvalidRequest, "username and password are required")
+    }
 
     // 写 cookies
     httpCookie := mooon_login.Cookie{
