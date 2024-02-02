@@ -7,7 +7,7 @@ all: mooon_login_example
 mooon_login_example: mooon_login.go
 	go build -o $@ $<
 
-.PHONY: rpc tidy clean
+.PHONY: rpc tidy clean fetch
 
 clean:
 	rm -fr mooon_login_example
@@ -17,3 +17,6 @@ rpc:
 
 tidy:
 	go mod tidy
+
+fetch: # 强制用远程仓库的覆盖本地，运行时需指定分支名，如：make fetch branch=main
+	git fetch --all&&git reset --hard origin/$$branch
