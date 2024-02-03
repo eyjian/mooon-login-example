@@ -11,10 +11,6 @@ import (
 
     "github.com/zeromicro/go-zero/core/logx"
 )
-import (
-    moooncrypto "github.com/eyjian/gomooon/crypto"
-    mooonutils "github.com/eyjian/gomooon/utils"
-)
 
 const (
     EmptyRequest   = 2024020201 // 空的请求
@@ -37,12 +33,14 @@ type LoginReq struct {
 
 // LoginResp 登录响应
 type LoginResp struct {
+    Sid    string `json:"sid"`    // 会话 ID
     Uid    uint32 `json:"uid"`    // 用户 ID
     Avatar string `json:"avatar"` // 头像
 }
 
 // userLoginData 用户登录数据
 type loginData struct {
+    sid      string // 会话 ID
     password string // 用户密码
     uid      uint32 // 用户 ID
 }
@@ -55,14 +53,17 @@ func init() {
 
     loginDataTable = map[string]*loginData{
         "mooon": &loginData{
+            sid:      "1234567890",
             password: "123456789a",
             uid:      2024020101,
         },
         "zhangsan": &loginData{
+            sid:      "1234567891",
             password: "123456789b",
             uid:      2024020102,
         },
         "wangwu": &loginData{
+            sid:      "1234567892",
             password: "123456789c",
             uid:      2024020103,
         },
@@ -116,7 +117,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     // 写 cookies
     sessionCookie := mooon_login.Cookie{
         Name:   "sessionid",
-        Value:  getSessionId(),
+        Value:  loginData.sid,
         MaxAge: 3600,
     }
     tokenCookie := mooon_login.Cookie{
@@ -137,9 +138,4 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.Body, _ = json.Marshal(&loginResp)
 
     return &out, nil
-}
-
-func getSessionId() string {
-    nonceStr := mooonutils.GetNonceStr(28)
-    return moooncrypto.Md5Sum(nonceStr, false)
 }
