@@ -10,6 +10,9 @@ import (
     "mooon-login-example/pb/mooon_login"
 
     "github.com/zeromicro/go-zero/core/logx"
+
+    moooncrypto "github.com/eyjian/gomooon/crypto"
+    mooonutils "github.com/eyjian/gomooon/utils"
 )
 
 const (
@@ -122,7 +125,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     }
     tokenCookie := mooon_login.Cookie{
         Name:     "token",
-        Value:    "token example",
+        Value:    getToken(),
         HttpOnly: true,
     }
     out.HttpCookies = append(out.HttpCookies, &sessionCookie)
@@ -139,4 +142,9 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     out.Body = string(bodyBytes)
 
     return &out, nil
+}
+
+func getToken() string {
+    nonceStr := mooonutils.GetNonceStr(64)
+    return moooncrypto.Md5Sum(nonceStr, false)
 }
