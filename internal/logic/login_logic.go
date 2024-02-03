@@ -45,7 +45,7 @@ type loginData struct {
     uid      uint32 // 用户 ID
 }
 
-var loginDataTable map[string]*loginData // Key 未用户名
+var loginDataTable map[string]*loginData // Key 为用户名
 
 // 初始化登录数据
 func init() {
