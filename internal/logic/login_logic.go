@@ -91,7 +91,7 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     }
 
     // 解密请求
-    err := json.Unmarshal(in.Body, &loginReq)
+    err := json.Unmarshal([]byte(in.Body), &loginReq)
     if err != nil {
         logc.Errorf(l.ctx, "invalid request")
         return nil, status.Error(InvalidRequest, "empty request")
@@ -135,7 +135,8 @@ func (l *LoginLogic) Login(in *mooon_login.LoginReq) (*mooon_login.LoginResp, er
     // 写响应体
     loginResp.Uid = loginData.uid
     loginResp.Avatar = "https://github.com/eyjian/mooon-login-example/blob/main/avatar.png"
-    out.Body, _ = json.Marshal(&loginResp)
+    bodyBytes, _ := json.Marshal(&loginResp)
+    out.Body = string(bodyBytes)
 
     return &out, nil
 }
